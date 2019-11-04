@@ -11,6 +11,13 @@ const {
 const { expect } = require('chai')
 const headless = false
 
+// -------------------------------------------------------------
+const FindTextOnPage = async (textToFindOnPage) => {
+  let txt = await text(textToFindOnPage)
+  expect(await txt.exists()).to.be.true
+}
+
+// -------------------------------------------------------------
 describe('Getting Started with Mocha and Taiko', () => {
   before(async () => {
     await openBrowser({ headless: headless })
@@ -20,8 +27,7 @@ describe('Getting Started with Mocha and Taiko', () => {
   describe('Add one todo', () => {
     it('after DB reset, todo list is empty', async () => {
       await goto('http://localhost:3000')
-      let txt = await text('0 / 0')
-      expect(await txt.exists()).to.be.true
+      FindTextOnPage('0 / 0')
     })
 
     it('create a new todo', async () => {
@@ -30,8 +36,7 @@ describe('Getting Started with Mocha and Taiko', () => {
     })
 
     it('new todo text found on page', async () => {
-      txt = await text('Foo')
-      expect(await txt.exists()).to.be.true
+      FindTextOnPage('Foo')
     })
 
     it('text entry is now empty', async () => {
@@ -39,8 +44,7 @@ describe('Getting Started with Mocha and Taiko', () => {
     })
 
     it('list has one element yet to be done', async () => {
-      txt = await text('1 / 1')
-      expect(await txt.exists()).to.be.true
+      FindTextOnPage('1 / 1')
     })
   })
 
