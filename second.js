@@ -26,145 +26,136 @@ const pause = async () => {
 }
 
 // -------------------------------------------------------------
-describe('Adding todos - one', async () => {
+describe('Todos tests', async () => {
   before(async () => {
     await openBrowser({ headless: headless })
-    await goto('http://localhost:4000/api/clean-database')
   })
 
-  describe('Add one todo', () => {
-    it('after DB reset, todo list is empty', async () => {
-      await goto('http://localhost:3000')
-      await FindTextOnPage('0 / 0')
+  // -------------------------------------------------------------
+  describe('Adding todos - one', async () => {
+    before(async () => {
+      await goto('http://localhost:4000/api/clean-database')
     })
 
-    it('create a new todo', async () => {
-      await write('Foo', into(textBox()))
-      await click('Save')
-    })
-
-    it('new todo text found on page', async () => {
-      await FindTextOnPage('Foo')
-    })
-
-    it('text entry is now empty', async () => {
-      expect(await textBox().value()).to.eql('')
-    })
-
-    it('list has one element yet to be done', async () => {
-      await FindTextOnPage('1 / 1')
-    })
-  })
-
-  after(async () => {
-    await closeBrowser()
-  })
-})
-
-// -------------------------------------------------------------
-describe('Adding todos - two', async () => {
-  before(async () => {
-    await openBrowser({ headless: headless })
-    await goto('http://localhost:4000/api/clean-database')
-  })
-
-  describe('Add two todos', () => {
-    it('after DB reset, todo list is empty', async () => {
-      await goto('http://localhost:3000')
-      await FindTextOnPage('0 / 0')
-    })
-
-    it('create two new todos', async () => {
-      await write('Foo', into(textBox()))
-      await click('Save')
-      await write('Bar', into(textBox()))
-      await click('Save')
-    })
-
-    it('new todos texts found on page', async () => {
-      await FindTextOnPage('Foo')
-      await FindTextOnPage('Bar')
-    })
-
-    it('text entry is now empty', async () => {
-      expect(await textBox().value()).to.eql('')
-    })
-
-    it('list has two elements yet to be done', async () => {
-      await FindTextOnPage('2 / 2')
-    })
-  })
-
-  after(async () => {
-    await closeBrowser()
-  })
-})
-
-// -------------------------------------------------------------
-describe('Deleting a todo', async () => {
-  before(async () => {
-    await openBrowser({ headless: headless })
-    await goto('http://localhost:4000/api/clean-database')
-  })
-
-  describe('Add one todo', () => {
-    it('after DB reset, todo list is empty', async () => {
-      await goto('http://localhost:3000')
-      await FindTextOnPage('0 / 0')
-    })
-
-    it('create a new todo', async () => {
-      await write('Foo', into(textBox()))
-      await click('Save')
-    })
-
-    it('delete the todo', async () => {
-      await click('X')
-    })
-
-    it('list has no elements yet to be done', async () => {
-      await FindTextOnPage('0 / 0')
-    })
-  })
-
-  after(async () => {
-    await closeBrowser()
-  })
-})
-
-// -------------------------------------------------------------
-describe('Marking a todo done', async () => {
-  before(async () => {
-    await openBrowser({ headless: headless })
-    await goto('http://localhost:4000/api/clean-database')
-  })
-
-  describe('Add one todo', () => {
-    it('after DB reset, todo list is empty', async () => {
-      await goto('http://localhost:3000')
-      await FindTextOnPage('0 / 0')
-    })
-
-    it('create a new todo', async () => {
-      await write('Foo', into(textBox()))
-      await click('Save')
-    })
-
-    it('mark the todo done', async () => {
-      await click('Foo')
-    })
-
-    it('is marked as done', async () => {
-      // bit of a hack to find the attribute value
-      const txt = await $(`//*[text()='Foo']`)
-      const styl = await evaluate(txt, (elem) => {
-        return elem.getAttribute('style')
+    describe('Add one todo', () => {
+      it('after DB reset, todo list is empty', async () => {
+        await goto('http://localhost:3000')
+        await FindTextOnPage('0 / 0')
       })
-      expect(styl.indexOf('text-decoration: line-through') > -1).to.be.true
+
+      it('create a new todo', async () => {
+        await write('Foo', into(textBox()))
+        await click('Save')
+      })
+
+      it('new todo text found on page', async () => {
+        await FindTextOnPage('Foo')
+      })
+
+      it('text entry is now empty', async () => {
+        expect(await textBox().value()).to.eql('')
+      })
+
+      it('list has one element yet to be done', async () => {
+        await FindTextOnPage('1 / 1')
+      })
+    })
+  })
+
+  // -------------------------------------------------------------
+  describe('Adding todos - two', async () => {
+    before(async () => {
+      await goto('http://localhost:4000/api/clean-database')
     })
 
-    it('list has no elements yet to be done, but one todo visible', async () => {
-      await FindTextOnPage('0 / 1')
+    describe('Add two todos', () => {
+      it('after DB reset, todo list is empty', async () => {
+        await goto('http://localhost:3000')
+        await FindTextOnPage('0 / 0')
+      })
+
+      it('create two new todos', async () => {
+        await write('Foo', into(textBox()))
+        await click('Save')
+        await write('Bar', into(textBox()))
+        await click('Save')
+      })
+
+      it('new todos texts found on page', async () => {
+        await FindTextOnPage('Foo')
+        await FindTextOnPage('Bar')
+      })
+
+      it('text entry is now empty', async () => {
+        expect(await textBox().value()).to.eql('')
+      })
+
+      it('list has two elements yet to be done', async () => {
+        await FindTextOnPage('2 / 2')
+      })
+    })
+  })
+
+  // -------------------------------------------------------------
+  describe('Deleting a todo', async () => {
+    before(async () => {
+      await goto('http://localhost:4000/api/clean-database')
+    })
+
+    describe('Add one todo', () => {
+      it('after DB reset, todo list is empty', async () => {
+        await goto('http://localhost:3000')
+        await FindTextOnPage('0 / 0')
+      })
+
+      it('create a new todo', async () => {
+        await write('Foo', into(textBox()))
+        await click('Save')
+      })
+
+      it('delete the todo', async () => {
+        await click('X')
+      })
+
+      it('list has no elements yet to be done', async () => {
+        await FindTextOnPage('0 / 0')
+      })
+    })
+  })
+
+  // -------------------------------------------------------------
+  describe('Marking a todo done', async () => {
+    before(async () => {
+      await goto('http://localhost:4000/api/clean-database')
+    })
+
+    describe('Add one todo', () => {
+      it('after DB reset, todo list is empty', async () => {
+        await goto('http://localhost:3000')
+        await FindTextOnPage('0 / 0')
+      })
+
+      it('create a new todo', async () => {
+        await write('Foo', into(textBox()))
+        await click('Save')
+      })
+
+      it('mark the todo done', async () => {
+        await click('Foo')
+      })
+
+      it('is marked as done', async () => {
+        // bit of a hack to find the attribute value
+        const txt = await $(`//*[text()='Foo']`)
+        const styl = await evaluate(txt, (elem) => {
+          return elem.getAttribute('style')
+        })
+        expect(styl.indexOf('text-decoration: line-through') > -1).to.be.true
+      })
+
+      it('list has no elements yet to be done, but one todo visible', async () => {
+        await FindTextOnPage('0 / 1')
+      })
     })
   })
 
