@@ -18,20 +18,27 @@ describe('Getting Started with Mocha and Taiko', () => {
   })
 
   describe('Add one todo', () => {
-    it('add the "Foo" todo, check that it shows up on the page', async () => {
+    it('after DB reset, todo list is empty', async () => {
       await goto('http://localhost:3000')
-      // after DB reset, todo list is empty
       let txt = await text('0 / 0')
       expect(await txt.exists()).to.be.true
-      // create a new todo
+    })
+
+    it('create a new todo', async () => {
       await write('Foo', into(textBox()))
       await click('Save')
-      // find its text on the page
+    })
+
+    it('new todo text found on page', async () => {
       txt = await text('Foo')
       expect(await txt.exists()).to.be.true
-      // text entry is now empty
+    })
+
+    it('text entry is now empty', async () => {
       expect(await textBox().value()).to.eql('')
-      // list has one element yet to be done
+    })
+
+    it('list has one element yet to be done', async () => {
       txt = await text('1 / 1')
       expect(await txt.exists()).to.be.true
     })
