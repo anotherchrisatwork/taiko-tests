@@ -145,12 +145,10 @@ describe('Todos tests', async () => {
       })
 
       it('is marked as done', async () => {
-        // bit of a hack to find the attribute value
+        // To find the attribute value. you must use '$' to find the element
         const txt = await $(`//*[text()='Foo']`)
-        const styl = await evaluate(txt, (elem) => {
-          return elem.getAttribute('style')
-        })
-        expect(styl.indexOf('text-decoration: line-through') > -1).to.be.true
+        const styl = await evaluate(txt, (elem) => elem.style.textDecoration)
+        expect(styl).to.eql('line-through')
       })
 
       it('list has no elements yet to be done, but one todo visible', async () => {
