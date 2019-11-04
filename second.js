@@ -7,13 +7,15 @@ const {
   text,
   textBox,
   click,
+  evaluate,
+  $,
 } = require('taiko')
 const { expect } = require('chai')
 const headless = process.env.HEADLESS === 'true'
 
 // -------------------------------------------------------------
 const FindTextOnPage = async (textToFindOnPage) => {
-  let txt = await text(textToFindOnPage)
+  const txt = await text(textToFindOnPage)
   expect(await txt.exists()).to.be.true
 }
 
@@ -116,16 +118,53 @@ describe('Deleting a todo', async () => {
       await click('Save')
     })
 
-    it('new todo text found on page', async () => {
-      await FindTextOnPage('Foo')
-    })
-
     it('delete the todo', async () => {
       await click('X')
     })
 
     it('list has no elements yet to be done', async () => {
       await FindTextOnPage('0 / 0')
+    })
+  })
+
+  after(async () => {
+    await closeBrowser()
+  })
+})
+
+// -------------------------------------------------------------
+describe('Marking a todo done', async () => {
+  before(async () => {
+    await openBrowser({ headless: headless })
+    await goto('http://localhost:4000/api/clean-database')
+  })
+
+  describe('Add one todo', () => {
+    it('after DB reset, todo list is empty', async () => {
+      await goto('http://localhost:3000')
+      await FindTextOnPage('0 / 0')
+    })
+
+    it('create a new todo', async () => {
+      await write('Foo', into(textBox()))
+      await click('Save')
+    })
+
+    it('mark the todo done', async () => {
+      await click('Foo')
+    })
+
+    it('is marked as done', async () => {
+      // bit of a hack to find the attribute value
+      const txt = await $(`//*[text()='Foo']`)
+      const styl = await evaluate(txt, (elem) => {
+        return elem.getAttribute('style')
+      })
+      expect(styl.indexOf('text-decoration: line-through') > -1).to.be.true
+    })
+
+    it('list has no elements yet to be done, but one todo visible', async () => {
+      await FindTextOnPage('0 / 1')
     })
   })
 
